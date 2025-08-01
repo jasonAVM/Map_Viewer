@@ -1,9 +1,9 @@
 // Configuration - Auto-generated from ortho processing
 const CONFIG = {
     initialView: {
-        lat: 46.153335,
-        lng: -122.991320,
-        zoom: 10
+        lat: 46.137960,
+        lng: -122.989262,
+        zoom: 15
     },
     
     zoomLevels: {
@@ -51,8 +51,9 @@ CONFIG.orthoLayers.forEach(layerConfig => {
     const layer = L.tileLayer(layerConfig.url, {
         attribution: layerConfig.name,
         maxZoom: CONFIG.zoomLevels.max,
-        tms: false,
-        bounds: layerConfig.bounds
+        tms: true,
+        bounds: layerConfig.bounds,
+        errorTileUrl: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' // Transparent 1x1 gif
     });
     layer.addTo(map);
 });
@@ -60,3 +61,25 @@ CONFIG.orthoLayers.forEach(layerConfig => {
 // Set zoom limits
 map.options.minZoom = CONFIG.zoomLevels.min;
 map.options.maxZoom = CONFIG.zoomLevels.max;
+
+// Add keyboard shortcut to show current position
+document.addEventListener('keydown', function(e) {
+    // Ctrl+Shift+P (or Cmd+Shift+P on Mac)
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'P') {
+        e.preventDefault();
+        
+        const center = map.getCenter();
+        const zoom = map.getZoom();
+        
+        const message = `Current Map Position:\n\n` +
+                       `Zoom: ${zoom}\n` +
+                       `Center Lat: ${center.lat.toFixed(6)}\n` +
+                       `Center Lng: ${center.lng.toFixed(6)}\n\n` +
+                       `To update initial view, change these values in CONFIG:\n` +
+                       `lat: ${center.lat.toFixed(6)}\n` +
+                       `lng: ${center.lng.toFixed(6)}\n` +
+                       `zoom: ${zoom}`;
+        
+        alert(message);
+    }
+});
